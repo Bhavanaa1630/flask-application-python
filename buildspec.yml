@@ -5,23 +5,17 @@ phases:
     runtime-versions:
       python: 3.8
     commands:
-      - echo Creating virtual environment
-      - python -m venv venv
-      - echo Listing files in current directory
-      - ls -al
-      - echo Listing files in venv directory
-      - ls -al venv
-      - echo Listing files in venv/bin directory
-      - ls -al venv/bin
-      - echo Activating virtual environment
-      - . venv/bin/activate || source venv/bin/activate
-      - echo Virtual environment activated
-      - echo Upgrading pip
-      - pip install --upgrade pip
       - echo Installing dependencies
+      - python -m venv venv
+      - ls -al  # List files in the root directory for verification
+      - ls -al venv  # List files in the venv directory for verification
+      - . venv/bin/activate || source venv/bin/activate  # Activate the virtual environment
+      - echo Virtual environment activated
+      - pip install --upgrade pip
       - pip install -r requirements.txt
-      - echo Installing pip-licenses
       - pip install pip-licenses
+      - echo Checking installed packages
+      - pip list  # Verify installed packages for troubleshooting
 
   build:
     commands:
@@ -36,3 +30,5 @@ post_build:
   commands:
     - echo Copying licenses.json to S3
     - aws s3 cp licenses.json s3://flask-app-licenses/licenses.json
+    - echo Build completed successfully
+
