@@ -5,14 +5,17 @@ phases:
     runtime-versions:
       python: 3.8
     commands:
-      - echo Installing Flask 2.0 and its dependencies
-      - pip install -r requirements.txt
       - pip install pip-licenses
 
   build:
     commands:
-      - echo Generating licenses.json
-      - pip-licenses --from=package --format=json --output-file=licenses.json --with-system
-      - echo Copying licenses.json to S3
-      - aws s3 cp licenses.json s3://flask-app-licenses/licenses.json
-      - echo Build completed successfully
+      - pip install -r requirements.txt
+      - pip-licenses --format=json --output-file=licenses.json
+
+artifacts:
+  files:
+    - licenses.json
+
+post_build:
+  commands:
+    - aws s3 cp licenses.json s3://$S3_BUCKET_NAME/licenses.json
