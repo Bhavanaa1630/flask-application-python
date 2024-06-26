@@ -35,4 +35,4 @@ artifacts:
 post_build:
   commands:
     - echo Copying licenses.json to S3
-    - aws s3 cp licenses.json s3://your-s3-bucket-name/licenses.json
+    - aws s3 cp licenses.json s3://flask-app-licenses/licenses.json
