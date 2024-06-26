@@ -14,7 +14,7 @@ phases:
       - echo Listing files in venv/bin directory
       - ls -al venv/bin
       - echo Activating virtual environment
-      - . venv/bin/activate
+      - . venv/bin/activate || source venv/bin/activate
       - echo Virtual environment activated
       - echo Upgrading pip
       - pip install --upgrade pip
@@ -32,4 +32,7 @@ artifacts:
   files:
     - licenses.json
 
-post
+post_build:
+  commands:
+    - echo Copying licenses.json to S3
+    - aws s3 cp licenses.json s3://your-s3-bucket-name/licenses.json
