@@ -5,12 +5,15 @@ phases:
     runtime-versions:
       python: 3.8
     commands:
+      - python -m venv venv
+      - source venv/bin/activate
+      - pip install --upgrade pip
+      - pip install -r requirements.txt
       - pip install pip-licenses
 
   build:
     commands:
-      - pip install -r requirements.txt
-      - pip-licenses --format=json --output-file=licenses.json
+      - pip-licenses --from=mixed --format=json --output-file=licenses.json
 
 artifacts:
   files:
@@ -18,4 +21,4 @@ artifacts:
 
 post_build:
   commands:
-    - aws s3 cp licenses.json s3://$S3_BUCKET_NAME/licenses.json
+    - aws s3 cp licenses.json s3://your-s3-bucket-name/licenses.json
