@@ -15,7 +15,8 @@ phases:
   build:
     commands:
       - echo "Starting Python script execution..."
-      - python3 - <<EOF
+      - |
+        python3 - <<EOF
         import json
         import boto3
         import os
