@@ -4,10 +4,11 @@ phases:
   install:
     runtime-versions:
       python: 3.8
+    commands:
+      - pip install --upgrade pip  # Ensure pip is up-to-date
+      - pip install license-checker || true  # Try installing license-checker, continue on failure
+      
   build:
     commands:
-      - pip install license-checker  # Install license-checker or any other tool
       - python license_checker.py  # Run your license checking script
-      
-      # Upload license info to S3 bucket
       - aws s3 cp licenses.json s3://flask-app-licenses/flask-app-build/licenses.json
