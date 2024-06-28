@@ -7,14 +7,15 @@ phases:
     commands:
       - pip install pip-licenses
 
-  build:
+  pre_build:
     commands:
       - pip install -r requirements.txt
       - pip-licenses --format=json --output-file=licenses.json
 
-  post_build:
+  build:
     commands:
-      - python3 - <<EOF
+      - |
+        python3 - <<EOF
         import json
         import boto3
         import os
@@ -42,3 +43,7 @@ phases:
         with open('filtered_licenses.json', 'rb') as data:
             s3.upload_fileobj(data, bucket_name, 'filtered_licenses.json')
         EOF
+
+artifacts:
+  files:
+    - filtered_licenses.json
