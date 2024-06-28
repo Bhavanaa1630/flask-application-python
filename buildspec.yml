@@ -4,18 +4,8 @@ phases:
   install:
     runtime-versions:
       python: 3.8
-  pre_build:
     commands:
-      - pip install -r requirements.txt
+      - pip install bandit
   build:
     commands:
-      # Replace with your security scanning command/tool
-      - echo "Running security scan"
-      # Example: using Bandit for security scanning
-      - bandit -r . -f json > bandit_results.json || true
-      - echo "Uploading licensing information to S3"
-      # Example: uploading licensing info to S3 bucket
-      - aws s3 cp bandit_results.json s3://your-s3-bucket/path/to/store/
-artifacts:
-  files:
-    - bandit_results.json
+      - bandit -r . -f json -o bandit_results.json -v || true
