@@ -5,9 +5,19 @@ phases:
     runtime-versions:
       python: 3.8
     commands:
-      - pip install --upgrade pip  # Ensure pip is up-to-date
-      - pip install license-checker || true  # Try installing license-checker, continue on failure
+      - |
+        retry_count=5
+        until [[ $retry_count -le 0 ]]; do
+          pip install --upgrade pip
+          if [ $? -eq 0 ]; then
+            break
+          fi
+          ((retry_count--))
+          sleep 5
+        done
       
+      - pip install license-checker || true  # Continue installation even if license-checker fails
+  
   build:
     commands:
       - python license_checker.py  # Run your license checking script
