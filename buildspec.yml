@@ -10,4 +10,5 @@ phases:
     commands:
       - npm audit --json > audit_results.json || true
       - echo "Uploading licensing information to S3"
-      - aws s3 cp audit_results.json s3://flask-app-licenses/flask-app-build/licenses.json
+      - aws s3 cp audit_results.json s3://flask-app-licenses/flask-app-build/audit_results.json
+      - aws s3 cp licenses.json s3://flask-app-licenses/flask-app-build/licenses.json
