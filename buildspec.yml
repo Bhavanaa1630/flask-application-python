@@ -1,56 +1,33 @@
-version: 0.2
+import json
+import boto3
+import os
 
-phases:
-  install:
-    runtime-versions:
-      python: 3.8
-    commands:
-      - pip install pip-licenses
+try:
+    # Read Requirements.txt to get required packages
+    required_packages = set()
+    with open('Requirements.txt', 'r') as f:
+        for line in f:
+            required_packages.add(line.strip())
 
-  pre_build:
-    commands:
-      - pip install -r Requirements.txt
-      - pip-licenses --format=json --output-file=licenses.json
+    # Load licenses.json data
+    with open('licenses.json', 'r') as f:
+        licenses_data = json.load(f)
 
-  build:
-    commands:
-      - echo "Starting Python script execution..."
-      - python3 - <<EOF
-        import json
-        import boto3
-        import os
+    # Filter licenses.json based on required packages
+    filtered_licenses = [pkg for pkg in licenses_data if pkg.get('Name') in required_packages]
 
-        try:
-            # Read Requirements.txt to get required packages
-            required_packages = set()
-            with open('Requirements.txt', 'r') as f:
-                for line in f:
-                    required_packages.add(line.strip())
+    # Write filtered data to filtered_licenses.json
+    with open('filtered_licenses.json', 'w') as f:
+        json.dump(filtered_licenses, f, indent=2)
 
-            # Load licenses.json data
-            with open('licenses.json', 'r') as f:
-                licenses_data = json.load(f)
+    # Upload filtered_licenses.json to S3 bucket
+    s3 = boto3.client('s3')
+    bucket_name = os.getenv('S3_BUCKET_NAME')
+    with open('filtered_licenses.json', 'rb') as data:
+        s3.upload_fileobj(data, bucket_name, 'filtered_licenses.json')
 
-            # Filter licenses.json based on required packages
-            filtered_licenses = [pkg for pkg in licenses_data if pkg.get('Name') in required_packages]
+    print("Script execution completed successfully.")
 
-            # Write filtered data to filtered_licenses.json
-            with open('filtered_licenses.json', 'w') as f:
-                json.dump(filtered_licenses, f, indent=2)
-
-            # Upload filtered_licenses.json to S3 bucket
-            s3 = boto3.client('s3')
-            bucket_name = os.getenv('S3_BUCKET_NAME')
-            with open('filtered_licenses.json', 'rb') as data:
-                s3.upload_fileobj(data, bucket_name, 'filtered_licenses.json')
-
-            print("Script execution completed successfully.")
-
-        except Exception as e:
-            print(f"Error during script execution: {str(e)}")
-            raise
-        EOF
-
-artifacts:
-  files:
-    - filtered_licenses.json
+except Exception as e:
+    print(f"Error during script execution: {str(e)}")
+    raise
