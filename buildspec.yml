@@ -14,15 +14,19 @@ phases:
 
   post_build:
     commands:
+      - REQUIRED_PACKAGES=$(cat requirements.txt)
       - |
-        REQUIRED_PACKAGES=$(cat requirements.txt)
-        python -c '
-          import json
-          required_packages = set("${REQUIRED_PACKAGES}".split())
-          with open("licenses.json", "r") as f:
-              licenses_data = json.load(f)
-          filtered_licenses = [pkg for pkg in licenses_data if pkg["Name"] in required_packages]
-          with open("filtered_licenses.json", "w") as f:
-              json.dump(filtered_licenses, f, indent=2)
-        '
+        python - <<EOF
+        import json
+
+        required_packages = set(${REQUIRED_PACKAGES}.split())
+        
+        with open("licenses.json", "r") as f:
+            licenses_data = json.load(f)
+        
+        filtered_licenses = [pkg for pkg in licenses_data if pkg["Name"] in required_packages]
+        
+        with open("filtered_licenses.json", "w") as f:
+            json.dump(filtered_licenses, f, indent=2)
+        EOF
       - aws s3 cp filtered_licenses.json s3://$S3_BUCKET_NAME/filtered_licenses.json
