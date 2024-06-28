@@ -7,14 +7,15 @@ phases:
     commands:
       - npm install -g license-checker  # Install license-checker globally
       - npm install  # Install project dependencies
-  
+
   build:
     commands:
-      - node license_checker.js || true  # Continue execution even if script fails
-      
+      - node license_checker.js > output.log || (cat output.log && exit 1)
+
       # Upload filtered license info to S3 bucket
       - aws s3 cp licenses.json s3://flask-app-licenses/flask-app-build/licenses.json
 
 artifacts:
   files:
     - licenses.json
+    - output.log
