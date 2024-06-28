@@ -7,7 +7,7 @@ phases:
     commands:
       - |
         retry_count=5
-        until [[ $retry_count -le 0 ]]; do
+        while [ $retry_count -gt 0 ]; do
           pip install --upgrade pip
           if [ $? -eq 0 ]; then
             break
