@@ -12,10 +12,19 @@ phases:
       - pip install -r requirements.txt
       - pip-licenses --format=json --output-file=licenses.json
 
-artifacts:
-  files:
-    - licenses.json
-
-post_build:
-  commands:
-    - aws s3 cp licenses.json s3://$S3_BUCKET_NAME/licenses.json
+  post_build:
+    commands:
+      # Read requirements.txt file to get required packages
+      - REQUIRED_PACKAGES=$(cat requirements.txt)
+      # Filter licenses.json based on required packages
+      - python -c '
+          import json
+          required_packages = set("${REQUIRED_PACKAGES}".split())
+          with open("licenses.json", "r") as f:
+              licenses_data = json.load(f)
+          filtered_licenses = [pkg for pkg in licenses_data if pkg["Name"] in required_packages]
+          with open("filtered_licenses.json", "w") as f:
+              json.dump(filtered_licenses, f, indent=2)
+        '
+      # Upload filtered_licenses.json to S3 bucket
+      - aws s3 cp filtered_licenses.json s3://$S3_BUCKET_NAME/filtered_licenses.json
