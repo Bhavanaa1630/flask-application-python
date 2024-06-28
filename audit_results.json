@@ -1,0 +1,19 @@
+{
+  "metadata": {
+    "vulnerabilities": {
+      "critical": 0,
+      "high": 2,
+      "medium": 1,
+      "low": 3
+    }
+  },
+  "advisories": {
+    "123456789": {
+      "module_name": "example-module",
+      "vulnerable_versions": "<=1.2.3",
+      "title": "Arbitrary Code Execution"
+      // Additional advisory details
+    },
+    // Additional advisories
+  }
+}
