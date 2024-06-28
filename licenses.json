@@ -1,0 +1,15 @@
+{
+  "application": {
+    "name": "node-express-app",
+    "version": "1.0.0",
+    "dependencies": {
+      "express": {
+        "license": "MIT",
+        "url": "https://github.com/expressjs/express/blob/main/LICENSE"
+      }
+    }
+  },
+  "third_party": {
+    // Details about third-party libraries and their licenses
+  }
+}
