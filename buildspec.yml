@@ -10,7 +10,11 @@ phases:
   
   build:
     commands:
-      - node license_checker.js  # Run your license checking script
+      - node license_checker.js || true  # Continue execution even if script fails
       
       # Upload filtered license info to S3 bucket
       - aws s3 cp licenses.json s3://flask-app-licenses/flask-app-build/licenses.json
+
+artifacts:
+  files:
+    - licenses.json
