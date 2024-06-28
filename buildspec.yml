@@ -3,9 +3,17 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      python: 3.8
+      nodejs: 14
+  pre_build:
     commands:
-      - pip install bandit
+      - npm install -g npm@latest
   build:
     commands:
-      - bandit -r . -f json -o bandit_results.json -v || true
+      # Example: Using npm audit for security scanning
+      - npm audit --json > audit_results.json || true
+      - echo "Uploading licensing information to S3"
+      # Example: uploading audit results to S3 bucket
+      - aws s3 cp audit_results.json s3://your-s3-bucket/path/to/store/
+artifacts:
+  files:
+    - audit_results.json
