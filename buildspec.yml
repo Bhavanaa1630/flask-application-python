@@ -14,7 +14,7 @@ phases:
 
   post_build:
     commands:
-      - REQUIRED_PACKAGES=$(cat requirements.txt)
+      - REQUIRED_PACKAGES=$(<requirements.txt)
       - |
         python - <<EOF
         import json
