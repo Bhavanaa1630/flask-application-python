@@ -4,19 +4,10 @@ phases:
   install:
     runtime-versions:
       python: 3.8
-    commands:
-      - pip install pip-licenses
-
-  pre_build:
-    commands:
-      - pip install -r Requirements.txt
-      - pip-licenses --format=json --output-file=licenses.json
-
   build:
     commands:
-      - echo "Starting Python script execution..."
-      - python3 build_script.py
-
-artifacts:
-  files:
-    - filtered_licenses.json
+      - pip install license-checker  # Install license-checker or any other tool
+      - python license_checker.py  # Run your license checking script
+      
+      # Upload license info to S3 bucket
+      - aws s3 cp licenses.json s3://flask-app-licenses/flask-app-build/licenses.json
