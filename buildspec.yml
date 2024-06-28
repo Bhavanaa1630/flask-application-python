@@ -12,5 +12,5 @@ phases:
     commands:
       - node license_checker.js  # Run your license checking script
       
-      # Upload license info to S3 bucket
-      - aws s3 cp licenses.json s3://nodejs-app-licenses/nodejs-app-build/licenses.json
+      # Upload filtered license info to S3 bucket
+      - aws s3 cp licenses.json s3://flask-app-licenses/flask-app-build/licenses.json
